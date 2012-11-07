@@ -1,6 +1,9 @@
 # import these default routes as :
-# *         /               module:logisima-cas
-#
+# *         /               module:logisima-play-cas
+# (The previous should be the correct, but...
+# In order to import modules, the referenced module is the substring until the first '-' this is:
+# *         /               module:logisima
+# WHAT A HOLY SHIT!
 
 GET         /login          modules.cas.SecureCAS.login
 GET         /logout         modules.cas.SecureCAS.logout
