@@ -65,14 +65,18 @@ public class SecureCAS extends Controller {
 
         String username = session.get("username");
 
-        // we clear cache
-        Cache.delete("pgt_" + username);
+        if (username != null && username.length != 0)) {
+          // we clear cache
+          Cache.delete("pgt_" + username);
+        }
 
         // we clear session
         session.clear();
 
-        // we invoke the implementation of "onDisconnected"
-        Security.invoke("onDisconnected", username);
+        if (username != null && username.length != 0)) {
+          // we invoke the implementation of "onDisconnected"
+          Security.invoke("onDisconnected", username);
+        }
 
         // we redirect to the cas logout page.
         String casLogoutUrl = CASUtils.getCasLogoutUrl();
