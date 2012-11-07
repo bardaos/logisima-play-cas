@@ -17,6 +17,7 @@
 package controllers.modules.cas;
 
 import play.Logger;
+import play.Play;
 import play.cache.Cache;
 import play.modules.cas.CASUtils;
 import play.modules.cas.annotation.Check;
@@ -35,6 +36,8 @@ import play.mvc.Router;
  */
 public class SecureCAS extends Controller {
 
+    private static String applicationURL = Play.configuration.getProperty("application.url");
+
     /**
      * Action for the login route. We simply redirect to CAS login page.
      *
@@ -44,7 +47,7 @@ public class SecureCAS extends Controller {
         // We must avoid infinite loops after success authentication
         if (!Router.route(request).action.equals("modules.cas.SecureCAS.login")) {
             // we put into session the url we come from
-            flash.put("url", request.method == "GET" ? request.url : "/");
+            flash.put("url", request.method == "GET" ? request.url : applicationURL);
         }
 
         // we redirect the user to the cas login page
@@ -108,12 +111,12 @@ public class SecureCAS extends Controller {
             // we redirect to the original URL
             String url = flash.get("url");
             if (url == null) {
-                url = "/";
+                url = applicationURL;
             }
             Logger.debug("[SecureCAS]: redirect to url -> " + url);
             redirect(url);
         } else {
-            fail();
+            forbidden();
         }
     }
 
@@ -159,7 +162,7 @@ public class SecureCAS extends Controller {
           } else {
               Logger.debug("[SecureCAS]: user is not authenticated");
               // we put into session the url we come from
-              flash.put("url", request.method == "GET" ? request.url : "/");
+              flash.put("url", request.method == "GET" ? request.url : applicationURL);
               flash.put("params", params);
 
               // we redirect the user to the cas login page

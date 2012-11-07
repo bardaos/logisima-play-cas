@@ -39,17 +39,19 @@ import edu.yale.its.tp.cas.util.SecureURL;
 
 /**
  * Utils class for CAS.
- * 
+ *
  * @author bsimard
- * 
+ *
  */
 public class CASUtils {
 
+    private static String applicationURL = Play.configuration.getProperty("application.url");
+
     /**
      * Method that generate the CAS login page URL.
-     * 
+     *
      * @param request
-     * 
+     *
      * @param possibleGateway
      * @throws Throwable
      */
@@ -70,7 +72,7 @@ public class CASUtils {
 
     /**
      * Method that generate the CAS logout page URL.
-     * 
+     *
      * @throws Throwable
      */
     public static String getCasLogoutUrl() {
@@ -79,18 +81,16 @@ public class CASUtils {
 
     /**
      * Method that return service url.
-     * 
+     *
      * @throws Throwable
      */
     private static String getCasServiceUrl() {
-        String casServiceUrl = Play.configuration.getProperty("application.url");
-        casServiceUrl += Router.reverse("modules.cas.SecureCAS.authenticate").url;
-        return casServiceUrl;
+      return applicationURL + "/authenticate";
     }
 
     /**
      * Method that return proxy call back url.
-     * 
+     *
      * @throws Throwable
      */
     private static String getCasProxyCallBackUrl() {
@@ -100,30 +100,30 @@ public class CASUtils {
             casProxyCallBackUrl = Play.configuration.getProperty("application.url.ssl");
         }
         else{
-            casProxyCallBackUrl = Play.configuration.getProperty("application.url");
+            casProxyCallBackUrl = applicationURL;
             casProxyCallBackUrl = casProxyCallBackUrl.replaceFirst("http://", "https://");
         }
         casProxyCallBackUrl += Router.reverse("modules.cas.SecureCAS.pgtCallBack").url;
         return casProxyCallBackUrl;
     }
-    
+
     /**
      * Method that return cas proxy url.
-     * 
+     *
      * @return
      */
     private static String getCasProxyUrl(){
         String casProxyUrl = Play.configuration.getProperty("cas.proxyUrl");
         return casProxyUrl;
     }
-    
+
     /**
      * Method to know if proxy cas is enabled (by testing conf).
-     * 
+     *
      * @return
      */
     private static Boolean isProxyCas(){
-        Boolean isProxyCas = Boolean.FALSE; 
+        Boolean isProxyCas = Boolean.FALSE;
         if(Play.configuration.getProperty("cas.proxyUrl")!=null && !Play.configuration.getProperty("cas.proxyUrl").equals("")){
             isProxyCas = Boolean.TRUE;
         }
@@ -132,7 +132,7 @@ public class CASUtils {
 
     /**
      * Method that verify if the cas ticket is valid.
-     * 
+     *
      * @param ticket
      *            cas tickets
      * @throws ParserConfigurationException
@@ -163,12 +163,12 @@ public class CASUtils {
             user = new CASUser();
             user.setUsername(sv.getUser());
             user.setAttribut(casAttribut);
-            
+
             if(isProxyCas()){
                 // here we get PGT from cache
                 String pgt = (String) Cache.get(sv.getPgtIou());
                 Cache.delete(sv.getPgtIou());
-    
+
                 // we put in cache PGT with PGT_username
                 Cache.add("pgt_" + user.getUsername(), pgt);
             }
@@ -176,10 +176,10 @@ public class CASUtils {
 
         return user;
     }
-    
+
     /**
      * Method to get CAS atribut from cas response.
-     * 
+     *
      * @param xml
      * @return
      * @throws SAXException
@@ -197,12 +197,12 @@ public class CASUtils {
             }
         }
         return casAttribut;
-        
+
     }
 
     /**
      * Method to get a proxy ticket.
-     * 
+     *
      * @param username
      * @param serviceName
      * @return
