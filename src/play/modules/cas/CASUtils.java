@@ -45,7 +45,7 @@ import edu.yale.its.tp.cas.util.SecureURL;
  */
 public class CASUtils {
 
-    private static String applicationURL = Play.configuration.getProperty("application.url");
+    private static String applicationURL = Play.configuration.getProperty("application.baseUrl");
 
     /**
      * Method that generate the CAS login page URL.
