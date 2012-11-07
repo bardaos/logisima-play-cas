@@ -99,7 +99,6 @@ public class Security extends Controller {
      * @throws Throwable
      */
     public static Object invoke(String m, Object... args) throws Throwable {
-        Logger.info(m);
         Class security = null;
         List<Class> classes = Play.classloader.getAssignableClasses(Security.class);
         if (classes.size() == 0) {
